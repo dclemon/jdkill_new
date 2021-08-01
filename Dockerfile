@@ -17,4 +17,4 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && python -m pip install --upgrade pip \
     && pip install -r requirements.txt
 WORKDIR ${SCRIPTS_DIR}
-CMD ["python", "/scripts/LEMON.py"]
+CMD ["python", "/scripts/main.py"]
