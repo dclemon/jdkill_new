@@ -1,10 +1,16 @@
-import os
-import configparser
 import requests
 from bs4 import BeautifulSoup
 import json
+import configparser
+import time
 
-
+def key_value_to_json(str):
+    a = str.split('&')
+    data_js = {}
+    for b in a:
+        c = b.split('=')
+        data_js[c[0]] = c[1]
+    return data_js
 def getmidstring(html, start_str, end):
     start = html.find(start_str)
     if start >= 0:
@@ -16,8 +22,8 @@ def getmidstring(html, start_str, end):
 
 def write_ini(inikey, inivaluse, str, filepath):
     config = configparser.ConfigParser()
-    parent_dir = os.path.dirname(os.path.abspath(__file__))
-    config.read(parent_dir + "/" + filepath, encoding='utf-8')
+    parent_dir = 'D:\数据\SynologyDrive\软件\jd_seckill'
+    config.read(parent_dir + "/" + filepath,encoding = 'utf-8')
     convaluse = config.set(inikey, inivaluse, str)
     config.write(open(parent_dir + "/" + filepath, "w"))
     return convaluse
@@ -25,8 +31,8 @@ def write_ini(inikey, inivaluse, str, filepath):
 
 def read_ini(inikey, inivaluse, filepath):
     config = configparser.RawConfigParser()
-    parent_dir = os.path.dirname(os.path.abspath(__file__))
-    config.read(parent_dir + "/" + filepath, encoding='utf-8')
+    parent_dir = 'D:\数据\SynologyDrive\软件\jd_seckill'
+    config.read(parent_dir + "\\" + filepath, encoding='utf-8')
     convaluse = config.get(inikey, inivaluse)
     return convaluse
 
@@ -61,3 +67,12 @@ def jd_checklogin(cokstr):
     d = c['data']['login']
     print("是否登录：" + str(d))
     return d, cookie
+
+def gettime():
+    # 获取京东时间，延迟以及抢购时间
+    url = 'https://api.m.jd.com/client.action?functionId=queryMaterialProducts&client=wh5'
+    r = requests.get(url, timeout=5).json()
+    jdtime = r["currentTime2"]
+    localtime = int(time.time() * 1000)
+    difftime = int(jdtime) - localtime
+    return jdtime, difftime
